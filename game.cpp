@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <list>
 #include <iostream>
+#include <cstdlib>
 #include "directions.h"
 
 #define SCREEN_WIDTH 640
@@ -73,6 +74,32 @@ public:
 	}
 };
 
+class Fruit {
+public:
+	SDL_Rect rect;
+
+	Fruit() {
+		rect.w = 20;
+		rect.h = 20;
+
+		change_position();
+	}
+
+	void update(double delta) {
+		
+	}
+
+	void draw(SDL_Renderer* renderer) {
+		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+		SDL_RenderFillRect(renderer, &rect);
+	}
+
+	int change_position() {
+		rect.x = rand() % (SCREEN_WIDTH - 20);
+		rect.y = rand() % (SCREEN_HEIGHT - 20);
+	}
+};
+
 int main(int argc, char* argv[]) {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
 		std::cout << "Something went wrong. Try again later.";	
@@ -90,6 +117,8 @@ int main(int argc, char* argv[]) {
 
 	SnakeNode first_node(0, 0);
 	Snake snake(first_node);
+
+	Fruit fruit;
 
 
 	double delta = 0;
@@ -126,6 +155,8 @@ int main(int argc, char* argv[]) {
 
 		snake.update(delta);
 		snake.draw(renderer);
+
+		fruit.draw(renderer);
 
 
 		SDL_RenderPresent(renderer);
