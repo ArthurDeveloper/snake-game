@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <list>
 #include <iostream>
+#include "directions.h"
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
@@ -31,9 +32,10 @@ class Snake {
 private:
 	std::list<SnakeNode> nodes;
 
-	const int speed = 150;
+	const int speed = 256;
 
 public:
+	int direction = RIGHT;
 
 	Snake(SnakeNode first_node) {
 		nodes.push_back(first_node);
@@ -41,8 +43,10 @@ public:
 
 	void update(double delta) {
 		for (auto& node : nodes) {
-			node.rect.x += speed * delta;
-			node.rect.y += speed * delta;
+			if (direction == RIGHT) node.rect.x += speed * delta;
+			else if (direction == LEFT) node.rect.x -= speed * delta;
+			else if (direction == UP) node.rect.y -= speed * delta;
+			else if (direction == DOWN) node.rect.y += speed * delta;
 
 			node.update();
 		}
@@ -52,6 +56,10 @@ public:
 		for (auto& node : nodes) {
 			node.draw(renderer);
 		}
+	}
+
+	void change_direction(int new_direction) {
+		direction = new_direction;
 	}
 	
 };
@@ -99,7 +107,10 @@ int main(int argc, char* argv[]) {
 			}
 
 			if (event.type == SDL_KEYDOWN) {
-				
+				if (event.key.keysym.sym == SDLK_RIGHT) snake.change_direction(RIGHT);
+				else if (event.key.keysym.sym == SDLK_LEFT) snake.change_direction(LEFT);
+				else if (event.key.keysym.sym == SDLK_UP) snake.change_direction(UP);
+				else if (event.key.keysym.sym == SDLK_DOWN) snake.change_direction(DOWN);
 			}
 		}
 
