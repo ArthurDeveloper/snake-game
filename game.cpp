@@ -41,6 +41,15 @@ public:
 		nodes.push_back(first_node);
 	}
 
+	void stick_to_screen() {
+		SnakeNode& head = nodes.front();
+
+		if (head.rect.x < 0) head.rect.x = 0;
+		if (head.rect.x + head.rect.w > SCREEN_WIDTH) head.rect.x = SCREEN_WIDTH - head.rect.w;
+		if (head.rect.y < 0) head.rect.y = 0;
+		if (head.rect.y + head.rect.h > SCREEN_HEIGHT) head.rect.y = SCREEN_HEIGHT - head.rect.h;
+	}
+
 	void update(double delta) {
 		for (auto& node : nodes) {
 			if (direction == RIGHT) node.rect.x += speed * delta;
@@ -49,6 +58,7 @@ public:
 			else if (direction == DOWN) node.rect.y += speed * delta;
 
 			node.update();
+			stick_to_screen();
 		}
 	}
 
@@ -61,7 +71,6 @@ public:
 	void change_direction(int new_direction) {
 		direction = new_direction;
 	}
-	
 };
 
 int main(int argc, char* argv[]) {
